@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Elevens">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/Elevens.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

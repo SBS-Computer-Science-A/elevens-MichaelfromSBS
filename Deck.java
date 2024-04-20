@@ -10,7 +10,7 @@ public class Deck {
     /**
      * cards contains all the cards in the deck.
      */
-    private ArrayList<Card> cards;
+    private ArrayList<Card> cards = new ArrayList<>();
 
     /**
      * size is the number of not-yet-dealt cards.
@@ -18,6 +18,9 @@ public class Deck {
      * The next card to be dealt is at size - 1.
      */
     private int size;
+    private String[] ranks1;
+    private String[] suits1;
+    private int[] values1;
 
 
     /**
@@ -29,7 +32,15 @@ public class Deck {
      * @param values is an array containing all of the card point values.
      */
     public Deck(String[] ranks, String[] suits, int[] values) {
-
+        ranks1 = ranks;
+        suits1 = suits;
+        values1 = values;
+        for(int i = 0;i<suits.length;i++){
+            for(int j = 0;j<ranks.length;j++){
+                cards.add(new Card(ranks[j],suits[i],values[j]));
+                size++;
+            }
+        }
     }
 
 
@@ -38,8 +49,7 @@ public class Deck {
      * @return true if this deck is empty, false otherwise.
      */
     public boolean isEmpty() {
-
-
+        return cards.isEmpty();
     }
 
     /**
@@ -47,8 +57,7 @@ public class Deck {
      * @return the number of undealt cards in this deck.
      */
     public int size() {
-
-
+        return cards.size();
     }
 
     /**
@@ -62,7 +71,27 @@ public class Deck {
      * searching for an as-yet-unselected card.
      */
     public void shuffle() {
-
+        ArrayList<Card> selected = new ArrayList<>();
+        size = 0;
+        while(!cards.isEmpty()){
+            cards.remove(0);
+        }
+        for(int i = 0;i<suits1.length;i++){//generate the full deck again
+            for(int j = 0;j<ranks1.length;j++){
+                cards.add(new Card(ranks1[j],suits1[i],values1[j]));
+                size++;
+            }
+        }
+        int length = cards.size();
+        for(int i=0;i<length;i++){
+            int place = (int)(cards.size()*Math.random());
+            selected.add(cards.get(place));
+            cards.remove(place);
+        }
+        for(int i = length-1;i>=0;i--){
+            cards.add(selected.get(i));
+            selected.remove(i);
+        }
     }
 
     /**
@@ -71,7 +100,11 @@ public class Deck {
      *         previously dealt.
      */
     public Card deal() {
-
+        if(cards.isEmpty()){
+            return null;
+        }
+        size--;
+        return cards.remove(0);
     }
 
     /**
