@@ -35,7 +35,7 @@ public class ElevensBoard extends Board{
      * Creates a new <code>ElevensBoard</code> instance.
      */
     public ElevensBoard() {
-
+        super(BOARD_SIZE,RANKS,SUITS,POINT_VALUES);
     }
 
     /**
@@ -48,6 +48,16 @@ public class ElevensBoard extends Board{
      *         false otherwise.
      */
     public boolean isLegal(Integer[] selectedCards) {
+        if(selectedCards.length!=2&&selectedCards.length!=3){
+            return false;
+        }
+        else if(selectedCards.length==2){
+            return containsPairSum11(selectedCards);
+        }
+        else if(selectedCards.length == 3){
+            return containsJQK(selectedCards);
+        }
+        return false;
     }
 
 
@@ -60,6 +70,30 @@ public class ElevensBoard extends Board{
      *         false otherwise.
      */
     public boolean anotherPlayIsPossible() {
+        Integer[] check_pair = new Integer[2];
+        Integer[] check_JQK = new Integer[3];
+        for(int i =0;i<size()-1;i++){//first check if there is pair of 11
+            for(int j = i+1;j<size();j++){
+                check_pair[0]=i;
+                check_pair[1]=j;
+                if(containsPairSum11(check_pair)){
+                    return true;
+                }
+            }
+        }
+        for(int i=0;i<size()-2;i++){
+            for(int j = 0;j<size()-1;j++){
+                for(int k = 0;k<size();k++){
+                    check_JQK[0] = i;
+                    check_JQK[1] = j;
+                    check_JQK[2] = k;
+                    if(containsJQK(check_JQK)){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
 
@@ -76,7 +110,22 @@ public class ElevensBoard extends Board{
      *              contain an 11-pair; false otherwise.
      */
     private boolean containsPairSum11(Integer[] selectedCards) {
+        for(int i = 0;i<selectedCards.length-1;i++){
+            for(int j = i+1;j<selectedCards.length;j++){
+                try{
+                    if(/*cardAt(selectedCards[i])!=null&&cardAt(selectedCards[j])!=null&&*/cardAt(selectedCards[i]).pointValue()+cardAt(selectedCards[j]).pointValue()==11){
+                        return true;
+                    }
+                }
+                catch (Exception e){
 
+                }
+//                if(cardAt(selectedCards[i])!=null&&cardAt(selectedCards[j])!=null&&cardAt(selectedCards[i]).pointValue()+cardAt(selectedCards[j]).pointValue()==11){
+//                    return true;
+//                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -88,6 +137,36 @@ public class ElevensBoard extends Board{
      *              include a jack, a queen, and a king; false otherwise.
      */
     private boolean containsJQK(Integer[] selectedCards) {
+        for(int i = 0;i<selectedCards.length;i++){
+            try{
+                if(cardAt(selectedCards[i]).rank().equals("jack")){
+                    for(int j = 0;j<selectedCards.length;j++){
+                        try{
+                            if(cardAt(selectedCards[j]).rank().equals("queen")){
+                                for(int k = 0; k<selectedCards.length;k++){
+                                    try{
+                                        if(cardAt((selectedCards[k])).rank().equals("king")){
+                                            return true;
+                                        }
+                                    }
+                                    catch(Exception e){
 
+                                    }
+                                }
+                                return false;
+                            }
+                        }
+                        catch(Exception e){
+
+                        }
+                    }
+                    return false;
+                }
+            }
+            catch(Exception e){
+
+            }
+        }
+        return false;
     }
 }

@@ -32,7 +32,7 @@ public class ThirteensBoard extends Board {
      * Creates a new <code>ThirteensBoard</code> instance.
      */
     public ThirteensBoard() {
-
+        super(BOARD_SIZE,RANKS,SUITS,POINT_VALUES);
     }
 
     /**
@@ -44,7 +44,16 @@ public class ThirteensBoard extends Board {
      *         false otherwise.
      */
     public boolean isLegal(Integer[] selectedCards) {
-
+        if(selectedCards.length!=2&&selectedCards.length!=1){
+            return false;
+        }
+        else if(selectedCards.length==2){
+            return containsPairSum13(selectedCards);
+        }
+        else if(selectedCards.length == 1){
+            return containsKing(selectedCards);
+        }
+        return false;
     }
 
     /**
@@ -55,7 +64,24 @@ public class ThirteensBoard extends Board {
      *         false otherwise.
      */
     public boolean anotherPlayIsPossible() {
-
+        Integer[] check_pair= new Integer[2];//using array to use contains- methods
+        Integer[] check_king = new Integer[1];
+        for(int i =0;i<size()-1;i++){//first check if there is pair of 11
+            for(int j = i+1;j<size();j++){
+                check_pair[0]=i;
+                check_pair[1]=j;
+                if(containsPairSum13(check_pair)){
+                    return true;
+                }
+            }
+        }
+        for(int i=0;i<size();i++){//then check if there is king
+            check_king[0] = i;
+            if(containsKing(check_king)){
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -67,7 +93,22 @@ public class ThirteensBoard extends Board {
      *         an empty list, if an 13-pair was not found.
      */
     private boolean containsPairSum13(Integer[] selectedCards) {
+        for(int i = 0;i<selectedCards.length-1;i++){
+            for(int j = i+1;j<selectedCards.length;j++){
+                try{
+                    if(/*cardAt(selectedCards[i])!=null&&cardAt(selectedCards[j])!=null&&*/cardAt(selectedCards[i]).pointValue()+cardAt(selectedCards[j]).pointValue()==13){
+                        return true;
+                    }
+                }
+                catch (Exception e){
 
+                }
+//                if(cardAt(selectedCards[i])!=null&&cardAt(selectedCards[j])!=null&&cardAt(selectedCards[i]).pointValue()+cardAt(selectedCards[j]).pointValue()==11){
+//                    return true;
+//                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -79,7 +120,17 @@ public class ThirteensBoard extends Board {
      *         an empty list, if a king was not found.
      */
     private boolean containsKing(Integer[] selectedCards) {
+        for(int i = 0;i<selectedCards.length;i++){
+            try{
+                if(cardAt(selectedCards[i]).rank().equals("king")){
+                    return true;
+                }
+            }
+            catch(Exception e){
 
+            }
+        }
+        return false;
     }
 
 }

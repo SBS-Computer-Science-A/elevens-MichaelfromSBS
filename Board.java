@@ -16,12 +16,15 @@ public class Board {
      */
     private Deck deck;
 
-
+    private int size;
     /**
-     * Creates a new <code>ElevensBoard</code> instance.
+     * Creates a new <code>Board</code> instance.
      */
     public Board(int size, String[] ranks, String[] suits, int[] pointValues) {
-
+        deck = new Deck(ranks, suits, pointValues);
+        this.size = size;
+        cards = new Card[size];
+        newGame();
     }
 
     /**
@@ -29,7 +32,8 @@ public class Board {
      * dealing some cards to this board.
      */
     public void newGame() {
-
+        deck.shuffle();
+        dealMyCards();
     }
 
     /**
@@ -39,6 +43,7 @@ public class Board {
      * @return the size of the board
      */
     public int size() {
+        return size;
     }
 
     /**
@@ -46,6 +51,10 @@ public class Board {
      * @return true if this board is empty; false otherwise.
      */
     public boolean isEmpty() {
+        if(cards.length==0){
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -54,13 +63,45 @@ public class Board {
      * @param k the index of the card to be dealt.
      */
     public void deal(int k) {
+        if(deck.size()==0){
+            cards[k] = null;
+        }
+        else{
+            cards[k] = deck.deal();
+        }
+//        for(int i = 0;i<cards.length;i++){
+//            try{
+//                if(cards[i].rank()!=null){
+//                    System.out.print(cards[i].rank() + " ");
+//                }
+//            }
+//            catch(Exception e){
+//                System.out.print("null ");
+//            }
+//        }
+//        System.out.println();
+        System.out.println(all_Null() + " " + deck.isEmpty());
     }
 
+    public boolean all_Null(){//a way of checking if the board is empty, used to check if the game is won
+        for(int i = 0;i<cards.length;i++){
+            try{
+                if(cards[i]!=null){
+                    return false;
+                }
+            }
+            catch(Exception e){
+
+            }
+        }
+        return true;
+    }
     /**
      * Accesses the deck's size.
      * @return the number of undealt cards left in the deck.
      */
     public int deckSize() {
+        return deck.size();
     }
 
     /**
@@ -69,6 +110,7 @@ public class Board {
      * @param k is the board position of the card to return.
      */
     public Card cardAt(int k) {
+        return cards[k];
     }
 
     /**
@@ -77,6 +119,9 @@ public class Board {
      *        cards to be replaced.
      */
     public void replaceSelectedCards(Integer[] selectedCards) {
+        for(int i = 0;i<selectedCards.length;i++){
+            deal(selectedCards[i]);
+        }
     }
 
     /**
@@ -86,6 +131,21 @@ public class Board {
      *         of the non-null entries on the board.
      */
     public Integer[] cardIndexes() {
+        int num = 0;
+        for(int i =0;i<size;i++){
+            if(cards[i]!=null){
+                num++;
+            }
+        }
+        Integer[] valid = new Integer[num];
+        num = 0;
+        for(int i = 0;i<size;i++){
+            if(cards[i]!=null){
+                valid[num] = i;
+                num++;
+            }
+        }
+        return valid;
     }
 
     /**
@@ -107,7 +167,7 @@ public class Board {
      *         false otherwise.
      */
     public boolean gameIsWon() {
-
+        return (all_Null()&& deck.isEmpty());
     }
 
     /**
@@ -117,6 +177,12 @@ public class Board {
      *         false otherwise.
      */
     public boolean isLegal(Integer[] selectedCards) {
+        for(int i =0;i<selectedCards.length;i++){
+            if(selectedCards[i]==null||selectedCards[i]<0||selectedCards[i]>=size){
+                return false;
+            }
+        }
+        return true;
     }
 
 
@@ -125,6 +191,7 @@ public class Board {
      *         false otherwise.
      */
     public boolean anotherPlayIsPossible() {
+        return cards.length>=1;
     }
 
 
@@ -132,7 +199,9 @@ public class Board {
      * Deal cards to this board to start the game.
      */
     private void dealMyCards() {
-
+        for(int i = 0;i<size();i++){
+            cards[i] = deck.deal();
+        }
     }
 
 }
